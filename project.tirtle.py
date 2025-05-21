@@ -1,75 +1,64 @@
-import turtle
-import random
-from random import randint
-import time
-t=turtle.Turtle()
-win=turtle.Screen()
-win.bgcolor("forest green")
-win.title("game")
-win.setup(800,600)
-t.penup()
-t.setpos(-140,200)
-t.color("white")
-t.write("TURTLE RACE",font=("arial",20,"bold"))
-# part 2
-#dirt
-t.speed(0)
-t.goto(-400,-250)
-t.color("chocolate")
-t.begin_fill()
-t.fd(800)
-t.left(90)
-t.fd(300)
-t.left(90)
-t.fd(800)
-t.left(90)
-t.fd(300)
-t.end_fill()
-t.hideturtle()
-t.left(90)
-t.fd(700)
-t.left(90)
-#finish line
-#1 box
-for i in range(12):
-    t.color("black")
-    t.begin_fill()
-    t.fd(20)
-    t.left(90)
-    t.fd(20)
-    t.left(90)
-    t.fd(20)
-    t.left(90)
-    t.fd(20)
-    t.end_fill()
-    t.left(90)
-    t.fd(25)
-t1=turtle.Turtle()
-t1.penup()
-t1.goto(-300,-200)
-t1.shape("turtle")
-t1.color("black")
-t2=turtle.Turtle()
-t2.penup()
-t2.goto(-300,-150)
-t2.shape("turtle")
-t2.color("green")
-t3=turtle.Turtle()
-t3.penup()
-t3.goto(-300,-100)
+def print_board(board):
+    print("\n")
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 9)
+    print("\n")
 
-t3.shape("turtle")
-t3.color("pink")
+def check_winner(board, player):
+    # Check rows, columns and diagonals
+    for row in board:
+        if all([cell == player for cell in row]):
+            return True
 
-t4=turtle.Turtle()
-t4.penup()
-t4.goto(-300,-50)
-t4.shape("turtle")
-t4.color("white")
-for i in range(200):
-    t1.fd(randint(1,5))
-    t2.fd(randint(1,5))
-    t3.fd(randint(1,5))
-    t4.fd(randint(1,5))
+    for col in range(3):
+        if all([board[row][col] == player for row in range(3)]):
+            return True
 
-time.sleep(1)
+    if all([board[i][i] == player for i in range(3)]):
+        return True
+
+    if all([board[i][2 - i] == player for i in range(3)]):
+        return True
+
+    return False
+
+def is_full(board):
+    return all(cell != " " for row in board for cell in row)
+
+def play_game():
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    current_player = "X"
+
+    print("Welcome to Tic-Tac-Toe!")
+    print_board(board)
+
+    while True:
+        try:
+            row = int(input(f"Player {current_player}, enter row (1-3): ")) - 1
+            col = int(input(f"Player {current_player}, enter column (1-3): ")) - 1
+
+            if board[row][col] != " ":
+                print("That spot is already taken. Try again.")
+                continue
+
+            board[row][col] = current_player
+            print_board(board)
+
+            if check_winner(board, current_player):
+                print(f"Player {current_player} wins!")
+                break
+            elif is_full(board):
+                print("It's a draw!")
+                break
+
+            current_player = "O" if current_player == "X" else "X"
+        except (ValueError, IndexError):
+            print("Invalid input. Please enter numbers between 1 and 3.")
+
+if __name__ == "__main__":
+    play_game()
+
+
+
+
